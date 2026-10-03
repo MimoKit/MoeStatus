@@ -22,7 +22,6 @@ from ..utils.raw_cache import get_raw_image, save_raw_image
 from ..moestatus_config import cfg_bool
 from ..moestatus_render import render_status_image, render_monitor_image
 from ..moestatus_data.debug import CollectTimer
-from ..moestatus_render.themes import pick_theme, theme_label
 
 sv = SV("萌状态", pm=6, priority=5, area="ALL")
 
@@ -63,11 +62,9 @@ async def handle_state(bot: Bot, ev: Event) -> None:
 
     async with _render_lock:
         timer = CollectTimer(is_debug)
-        # 皮肤在进入渲染前定下来，保证同一张报告只用一套
-        theme = pick_theme()
         try:
             view = await build_view(is_pro=is_pro, is_debug=is_debug, ev=ev, timer=timer)
-            image, raw = await render_status_image(view, theme)
+            image, raw = await render_status_image(view)
             msg_ids = await bot.send(MessageSegment.image(image), wait_recall=True)
         except _RENDER_ERRORS as exc:
             logger.exception(f"[MoeStatus] 状态图生成失败: {exc}")
@@ -75,7 +72,7 @@ async def handle_state(bot: Bot, ev: Event) -> None:
             return
 
         if is_debug:
-            await bot.send(f"{timer.render()}\n皮肤: {theme_label(theme)}")
+            await bot.send(timer.render())
 
         recall_ids = [ev.msg_id]
         if msg_ids:
@@ -87,7 +84,7 @@ async def handle_state(bot: Bot, ev: Event) -> None:
 async def handle_monitor(bot: Bot, ev: Event) -> None:
     try:
         view = await build_monitor_view()
-        image, _ = await render_monitor_image(view, pick_theme())
+        image, _ = await render_monitor_image(view)
     except _RENDER_ERRORS as exc:
         logger.exception(f"[MoeStatus] 趋势图生成失败: {exc}")
         await bot.send("趋势图没画出来，看看后台日志吧")
@@ -114,7 +111,5 @@ async def handle_help(bot: Bot, ev: Event) -> None:
         "moe状态debug —— 附带各模块采集耗时\n"
         "moe监控 —— CPU / 内存 / 网络 / 磁盘的历史曲线\n"
         "moe原图 —— 引用状态消息，取回未压缩原图\n"
-        "moe帮助 —— 这份说明\n"
-        "皮肤有三套（纯白气泡 / 奶白便签 / 浅灰蓝云朵），在控制台"
-        "「MoeStatus → 界面皮肤」里选，默认每次随机。"
+        "moe帮助 —— 这份说明"
     )

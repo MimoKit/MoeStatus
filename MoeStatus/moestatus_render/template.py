@@ -1,4 +1,4 @@
-"""Jinja2 装配层：把视图数据塞进选定主题的模板，落盘成一份自包含的 HTML。"""
+"""Jinja2 装配层：把视图数据塞进模板，落盘成一份自包含的 HTML。"""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from .themes import theme_label, normalize_theme
 from ..version import MoeStatus_version
 from ..utils.resource import VIEW_PATH, CACHE_PATH, RESOURCE_PATH
 from ..moestatus_data.types import StatusView, MonitorView
@@ -55,18 +54,11 @@ async def _dump_html(prefix: str, template_name: str, context: dict[str, object]
     return out
 
 
-def _theme_context(theme: str | None) -> dict[str, object]:
-    chosen = normalize_theme(theme)
-    return {"theme": chosen, "theme_label": theme_label(chosen)}
+async def render_status_page(view: StatusView) -> Path:
+    context: dict[str, object] = {**_base_context(), **view}
+    return await _dump_html("status", "status.html.j2", context)
 
 
-async def render_status_page(view: StatusView, theme: str | None = None) -> Path:
-    context: dict[str, object] = {**_base_context(), **view, **_theme_context(theme)}
-    chosen = str(context["theme"])
-    return await _dump_html(f"status-{chosen}", f"theme-{chosen}/status.html.j2", context)
-
-
-async def render_monitor_page(view: MonitorView, theme: str | None = None) -> Path:
-    context: dict[str, object] = {**_base_context(), **view, **_theme_context(theme)}
-    chosen = str(context["theme"])
-    return await _dump_html(f"monitor-{chosen}", f"theme-{chosen}/monitor.html.j2", context)
+async def render_monitor_page(view: MonitorView) -> Path:
+    context: dict[str, object] = {**_base_context(), **view}
+    return await _dump_html("monitor", "monitor.html.j2", context)

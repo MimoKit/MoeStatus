@@ -1,0 +1,650 @@
+/* MoeStatus · 奶白卡片
+   暖白底 + 精致卡片：发丝描边、双层柔和阴影、统一圆角与网格。
+   结构色只用一个暖琥珀，数据色留给量表本身，避免整页花掉。 */
+
+@font-face {
+  font-family: 'KuaiLe';
+  src: url('{{ res }}fonts/ZCOOLKuaiLe-Regular.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Baloo';
+  src: url('{{ res }}fonts/Baloo2-Variable.ttf') format('truetype');
+  font-weight: 400 800;
+  font-display: block;
+}
+
+:root {
+  --bg: #fbf6ee;
+  --card: #ffffff;
+  --card-top: #fffdfa;
+
+  --ink: #2b2520;
+  --ink-2: #6d6155;
+  --ink-3: #9c9083;
+
+  --line: rgba(43, 37, 32, .07);
+  --track: #f3ece1;
+
+  --accent: #de9f3c;
+  --sage: #62b48c;
+  --berry: #d2647f;
+  --sky: #5e9fd1;
+  --plum: #9b7bc4;
+}
+
+.lv-low,
+.vd-good {
+  --c: var(--sage);
+}
+
+.lv-mid,
+.vd-warn {
+  --c: var(--accent);
+}
+
+.lv-high,
+.vd-bad {
+  --c: var(--berry);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'KuaiLe', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.num {
+  font-family: 'Baloo', 'KuaiLe', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------- 纸面 ---------- */
+
+.page {
+  width: 900px;
+  padding: 30px 32px 24px;
+  background:
+    radial-gradient(130% 62% at 50% -14%, #fffefb 0%, rgba(255, 254, 251, 0) 64%),
+    var(--bg);
+}
+
+/* ---------- 抬头 ---------- */
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 4px 18px;
+}
+
+.top__mark {
+  flex: none;
+  width: 54px;
+  filter: drop-shadow(0 4px 8px rgba(43, 37, 32, .10));
+}
+
+.top__mark .mascot {
+  display: block;
+  width: 100%;
+}
+
+.top__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.top__name {
+  font-size: 21px;
+  letter-spacing: .08em;
+}
+
+.top__time {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* ---------- 卡片 ---------- */
+
+.card {
+  position: relative;
+  min-width: 0;
+  padding: 18px 20px 17px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--card-top), var(--card));
+  box-shadow:
+    0 1px 2px rgba(43, 37, 32, .035),
+    0 8px 20px -10px rgba(43, 37, 32, .13);
+}
+
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: .07em;
+}
+
+.card__title::before {
+  content: "";
+  flex: none;
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.card--wide {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 结论 ---------- */
+
+.card--hero {
+  padding: 22px 24px;
+  border-color: rgba(222, 159, 60, .18);
+  background: linear-gradient(135deg, #fff8ea 0%, #ffffff 58%);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero__title {
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: .1em;
+  color: var(--c);
+}
+
+.hero__line {
+  margin: 9px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.hero__score {
+  flex: none;
+  min-width: 148px;
+  padding-left: 24px;
+  border-left: 1px solid var(--line);
+  text-align: right;
+}
+
+.hero__score b {
+  display: block;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c);
+}
+
+.hero__score span {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: var(--ink-3);
+}
+
+/* ---------- 圆环量表 ---------- */
+
+.rings {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.ring {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.ring__wrap {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  margin: 0 auto;
+}
+
+.ring__wrap svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring__track {
+  fill: none;
+  stroke: var(--track);
+  stroke-width: 11;
+}
+
+.ring__fill {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 11;
+  stroke-linecap: round;
+}
+
+.ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring__center b {
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--c);
+}
+
+.ring__label {
+  margin-top: 8px;
+  font-size: 15px;
+  letter-spacing: .05em;
+}
+
+.ring__note {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 机器人 ---------- */
+
+.bot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bot+.bot {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.bot__pic {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--track);
+  border: 1px solid var(--line);
+}
+
+.bot__pic--empty {
+  background: linear-gradient(135deg, #f6ebda, #fbedf2);
+}
+
+.bot__info {
+  flex: none;
+  width: 208px;
+  min-width: 0;
+}
+
+.bot__name {
+  font-size: 20px;
+  letter-spacing: .05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bot__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pill {
+  padding: 2px 10px 3px;
+  border-radius: 999px;
+  background: #f7f2ea;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.pill--accent {
+  background: rgba(222, 159, 60, .15);
+  color: #a87420;
+}
+
+.bot__stats {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.stat {
+  min-width: 0;
+  text-align: center;
+}
+
+.stat b {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.stat span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* ---------- 网络 / 站点 ---------- */
+
+.speed {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 0;
+}
+
+.speed+.speed {
+  border-top: 1px solid var(--line);
+}
+
+.speed__tag {
+  flex: none;
+  width: 38px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.speed__val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.speed__val--up {
+  color: var(--sky);
+}
+
+.speed__total {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.site {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 14px;
+}
+
+.site+.site {
+  border-top: 1px solid var(--line);
+}
+
+.site__val.ok {
+  color: var(--sage);
+}
+
+.site__val.bad {
+  color: var(--berry);
+}
+
+/* ---------- 存储 ---------- */
+
+.disk+.disk {
+  margin-top: 14px;
+}
+
+.disk__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.disk__mount {
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.disk__pct {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c);
+}
+
+.disk__track {
+  height: 9px;
+  border-radius: 999px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.disk__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--c);
+}
+
+.disk__foot {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.io {
+  display: flex;
+  gap: 22px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.io__item {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.io__item b {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ---------- 进程 ---------- */
+
+.proc__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px 86px 92px;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.proc__row+.proc__row {
+  border-top: 1px solid var(--line);
+}
+
+.proc__row--head {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 12px;
+  letter-spacing: .08em;
+}
+
+.proc__row--head+.proc__row {
+  border-top: none;
+}
+
+.proc__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r {
+  text-align: right;
+}
+
+.proc__foot {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* ---------- 趋势 ---------- */
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 28px;
+}
+
+.chart {
+  min-width: 0;
+}
+
+.chart__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chart__name {
+  font-size: 14px;
+  letter-spacing: .04em;
+  color: var(--ink-2);
+}
+
+.chart__val {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.chart__svg {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 4px;
+  overflow: visible;
+}
+
+.chart__foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* ---------- 键值行 ---------- */
+
+.fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 14px;
+}
+
+.fact+.fact {
+  border-top: 1px solid var(--line);
+}
+
+.fact__key {
+  flex: none;
+  color: var(--ink-3);
+}
+
+.fact__val {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 空态 ---------- */
+
+.empty {
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--ink-3);
+}
+
+/* ---------- 页脚 ---------- */
+
+.foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 0 6px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.foot b {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

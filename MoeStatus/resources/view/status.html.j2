@@ -1,51 +1,51 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 
 <head>
   <meta charset="utf-8">
-  <title>B · 奶白便签墙</title>
-  <style>{% include "theme-b/style.css" %}</style>
+  <title>{{ mascot_name }}体检所</title>
+  <style>{% include "style.css" %}</style>
 </head>
 
 <body>
-  <main id="container" class="wall vd-{{ verdict.level }}">
+  <main id="container" class="page vd-{{ verdict.level }}">
 
-    <div class="wall__head">
-      <div class="wall__mark">{% with mood = verdict.level %}{% include "_mascot.html.j2" %}{% endwith %}</div>
-      <div class="wall__title">{{ mascot_name }}体检便签</div>
-      <div class="wall__time num">{{ generated_at }}{% if is_pro %} · 全量{% endif %}</div>
-    </div>
+    <header class="top">
+      <div class="top__mark">{% with mood = verdict.level %}{% include "_mascot.html.j2" %}{% endwith %}</div>
+      <div class="top__text">
+        <div class="top__name">{{ mascot_name }}体检所</div>
+        <div class="top__time num">{{ generated_at }}{% if is_pro %} · 全量体检{% endif %}</div>
+      </div>
+    </header>
+
+    <section class="card card--hero">
+      <div class="hero">
+        <div class="hero__main">
+          <div class="hero__title">{{ verdict.title }}</div>
+          <p class="hero__line">{{ verdict.line }}</p>
+        </div>
+        <div class="hero__score">
+          <b class="num">{{ verdict.score }}</b>
+          <span>健康分 / 100</span>
+        </div>
+      </div>
+    </section>
 
     <div class="grid">
 
-      <section class="note note--wide note--verdict">
-        <div class="verdict">
-          <div class="verdict__left">
-            <div class="verdict__word">{{ verdict.title }}</div>
-            <p class="verdict__line">{{ verdict.line }}</p>
-          </div>
-          <div class="verdict__right">
-            <div class="verdict__score num">{{ verdict.score }}</div>
-            <div class="verdict__scoreLabel">健康分</div>
-          </div>
-        </div>
-      </section>
-
       {% if gauges %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--matcha">体检项</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">体检项</h2>
         <div class="rings">
           {% for g in gauges %}
           <div class="ring lv-{{ g.level }}">
             <div class="ring__wrap">
-              <svg viewBox="0 0 120 120">
-                <circle class="ring__track" cx="60" cy="60" r="46" />
-                <circle class="ring__fill" cx="60" cy="60" r="46"
-                  style="stroke-dasharray: 289.03; stroke-dashoffset: {{ (289.03 * (1 - g.value)) | round(2) }}" />
+              <svg viewBox="0 0 120 120" role="img" aria-label="{{ g.label }} {{ g.text }}">
+                <circle class="ring__track" cx="60" cy="60" r="45" />
+                <circle class="ring__fill" cx="60" cy="60" r="45"
+                  style="stroke-dasharray: 282.74; stroke-dashoffset: {{ (282.74 * (1 - g.value)) | round(2) }}" />
               </svg>
-              <div class="ring__center">
-                <b class="num">{{ g.text }}</b>
-              </div>
+              <div class="ring__center"><b class="num">{{ g.text }}</b></div>
             </div>
             <div class="ring__label">{{ g.label }}</div>
             <div class="ring__note num">{{ g.note }}</div>
@@ -56,33 +56,34 @@
       {% endif %}
 
       {% if bots %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--straw">机器人</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">机器人</h2>
         {% for b in bots %}
         <div class="bot">
-          {% if b.avatar %}<img class="bot__pic" src="{{ b.avatar }}" alt="">{% else %}<div class="bot__pic bot__pic--empty"></div>{% endif %}
-          <div class="bot__main">
+          {% if b.avatar %}<img class="bot__pic" src="{{ b.avatar }}" alt="">{% else %}<div
+            class="bot__pic bot__pic--empty"></div>{% endif %}
+          <div class="bot__info">
             <div class="bot__name">{{ b.nickname }}</div>
             <div class="bot__pills">
-              <span class="pill pill--straw">{{ b.platform }}</span>
+              <span class="pill pill--accent">{{ b.platform }}</span>
               <span class="pill num">{{ b.version }}</span>
               {% if b.uptime %}<span class="pill num">在线 {{ b.uptime }}</span>{% endif %}
             </div>
           </div>
-          <div class="bot__grid">
-            <div class="cell"><b class="num">{{ b.recv or "—" }}</b><span>收到</span></div>
-            <div class="cell"><b class="num">{{ b.sent or "—" }}</b><span>发出</span></div>
-            <div class="cell"><b class="num">{{ b.friends or "—" }}</b><span>好友</span></div>
-            <div class="cell"><b class="num">{{ b.groups or "—" }}</b><span>群组</span></div>
-            <div class="cell"><b class="num">{{ b.members or "—" }}</b><span>群成员</span></div>
+          <div class="bot__stats">
+            <div class="stat"><b class="num">{{ b.recv or "—" }}</b><span>收到</span></div>
+            <div class="stat"><b class="num">{{ b.sent or "—" }}</b><span>发出</span></div>
+            <div class="stat"><b class="num">{{ b.friends or "—" }}</b><span>好友</span></div>
+            <div class="stat"><b class="num">{{ b.groups or "—" }}</b><span>群组</span></div>
+            <div class="stat"><b class="num">{{ b.members or "—" }}</b><span>群成员</span></div>
           </div>
         </div>
         {% endfor %}
       </section>
       {% endif %}
 
-      <section class="note">
-        <h2 class="note__title"><span class="marker marker--sky">网络</span></h2>
+      <section class="card">
+        <h2 class="card__title">网络</h2>
         <div class="speed">
           <span class="speed__tag">下行</span>
           <b class="speed__val num">{{ net.down_speed }}</b>
@@ -96,8 +97,8 @@
       </section>
 
       {% if sites %}
-      <section class="note">
-        <h2 class="note__title"><span class="marker marker--grape">站点</span></h2>
+      <section class="card">
+        <h2 class="card__title">站点</h2>
         {% for s in sites %}
         <div class="site">
           <span class="site__name">{{ s.name }}</span>
@@ -108,8 +109,8 @@
       {% endif %}
 
       {% if disks %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--honey">存储</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">存储</h2>
         {% for d in disks %}
         <div class="disk lv-{{ d.level }}">
           <div class="disk__top">
@@ -134,8 +135,8 @@
       {% endif %}
 
       {% if procs %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--straw">进程</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">进程</h2>
         <div class="proc__row proc__row--head">
           <span>进程</span><span class="r">PID</span><span class="r">CPU</span><span class="r">内存</span>
         </div>
@@ -147,13 +148,14 @@
           <span class="r num">{{ p.mem }}</span>
         </div>
         {% endfor %}
-        <div class="proc__foot num">共 {{ proc_summary.total }} 个 · 运行 {{ proc_summary.running }} · 休眠 {{ proc_summary.sleeping }}</div>
+        <div class="proc__foot num">共 {{ proc_summary.total }} 个 · 运行 {{ proc_summary.running }} · 休眠 {{
+          proc_summary.sleeping }}</div>
       </section>
       {% endif %}
 
       {% if charts %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--grape">趋势</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">趋势</h2>
         <div class="charts">
           {% for c in charts %}
           <div class="chart">
@@ -161,42 +163,50 @@
               <span class="chart__name">{{ c.name }}</span>
               <span class="chart__val num">{{ c.latest }}</span>
             </div>
-            <svg class="chart__svg" viewBox="0 0 100 40" preserveAspectRatio="none">
+            <svg class="chart__svg" viewBox="0 0 100 40" preserveAspectRatio="none" role="img"
+              aria-label="{{ c.name }} 历史曲线">
               <defs>
                 <linearGradient id="b{{ loop.index }}" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".32" />
+                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".28" />
                   <stop offset="100%" stop-color="{{ c.color }}" stop-opacity="0" />
                 </linearGradient>
               </defs>
               <path d="{{ c.area_path }}" fill="url(#b{{ loop.index }})" />
               <path d="{{ c.line_path }}" fill="none" stroke="{{ c.color }}" stroke-width="2" stroke-linecap="round"
-                vector-effect="non-scaling-stroke" />
+                stroke-linejoin="round" vector-effect="non-scaling-stroke" />
             </svg>
-            <div class="chart__foot num"><span>{{ c.ticks[0] if c.ticks else "" }}</span><span>峰值 {{ c.peak }}</span><span>{{ c.ticks[-1] if c.ticks else "" }}</span></div>
+            <div class="chart__foot num"><span>{{ c.ticks[0] if c.ticks else "" }}</span><span>峰值 {{ c.peak
+                }}</span><span>{{ c.ticks[-1] if c.ticks else "" }}</span></div>
           </div>
           {% endfor %}
         </div>
       </section>
       {% endif %}
 
-      {% if sysinfo or fastfetch %}
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--matcha">环境</span></h2>
-        <div class="facts">
-          {% for r in sysinfo %}
-          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
-          {% endfor %}
-          {% for r in fastfetch %}
-          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
-          {% endfor %}
+      {% if sysinfo %}
+      <section class="card">
+        <h2 class="card__title">系统</h2>
+        {% for r in sysinfo %}
+        <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span>
         </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if fastfetch %}
+      <section class="card">
+        <h2 class="card__title">运行环境</h2>
+        {% for r in fastfetch %}
+        <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span>
+        </div>
+        {% endfor %}
       </section>
       {% endif %}
 
     </div>
 
     <footer class="foot">
-      <span>MoeStatus v{{ version }}</span>
+      <span>MoeStatus <b>v{{ version }}</b> · {{ mascot_name }}体检所</span>
       <span class="num">{{ footer_right }}</span>
     </footer>
 

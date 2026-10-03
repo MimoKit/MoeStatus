@@ -18,7 +18,6 @@ sys.path.insert(0, str(PLUGIN_ROOT.parent))
 from MoeStatus.MoeStatus.moestatus_data import build_view, build_monitor_view  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_render import render_scale  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_data.debug import CollectTimer  # noqa: E402
-from MoeStatus.MoeStatus.moestatus_render.themes import THEMES  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_render.browser import screenshot  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_render.template import (  # noqa: E402
     render_status_page,
@@ -52,15 +51,15 @@ async def main() -> int:
     monitor_view = await build_monitor_view()
     scale = render_scale()
     print(f"\n渲染倍率: {scale}x")
-    for theme in THEMES:
-        html = await render_status_page(view, theme)
-        (out / f"real-status-{theme}.html").write_bytes(html.read_bytes())
-        (out / f"real-status-{theme}.png").write_bytes(await screenshot(html, scale=scale))
-        print(f"[ok] real-status-{theme}.png")
 
-        monitor_html = await render_monitor_page(monitor_view, theme)
-        (out / f"real-monitor-{theme}.png").write_bytes(await screenshot(monitor_html, scale=scale))
-        print(f"[ok] real-monitor-{theme}.png")
+    html = await render_status_page(view)
+    (out / "real-status.html").write_bytes(html.read_bytes())
+    (out / "real-status.png").write_bytes(await screenshot(html, scale=scale))
+    print("[ok] real-status.png")
+
+    monitor_html = await render_monitor_page(monitor_view)
+    (out / "real-monitor.png").write_bytes(await screenshot(monitor_html, scale=scale))
+    print("[ok] real-monitor.png")
     return 0
 
 

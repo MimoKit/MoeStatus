@@ -3,22 +3,24 @@
 
 <head>
   <meta charset="utf-8">
-  <title>{{ mascot_name }}体检便签 · 趋势</title>
-  <style>{% include "theme-b/style.css" %}</style>
+  <title>{{ mascot_name }}体检所 · 趋势</title>
+  <style>{% include "style.css" %}</style>
 </head>
 
 <body>
-  <main id="container" class="wall vd-good">
+  <main id="container" class="page vd-good">
 
-    <div class="wall__head">
-      <div class="wall__mark">{% with mood = "good" %}{% include "_mascot.html.j2" %}{% endwith %}</div>
-      <div class="wall__title">{{ mascot_name }}体检便签 · 趋势</div>
-      <div class="wall__time num">{{ generated_at }}</div>
-    </div>
+    <header class="top">
+      <div class="top__mark">{% with mood = "good" %}{% include "_mascot.html.j2" %}{% endwith %}</div>
+      <div class="top__text">
+        <div class="top__name">{{ mascot_name }}体检所 · 趋势</div>
+        <div class="top__time num">{{ generated_at }}</div>
+      </div>
+    </header>
 
     <div class="grid">
-      <section class="note note--wide">
-        <h2 class="note__title"><span class="marker marker--grape">采样记录 · {{ theme_label }}</span></h2>
+      <section class="card card--wide">
+        <h2 class="card__title">采样记录</h2>
         {% if charts %}
         <div class="charts">
           {% for c in charts %}
@@ -31,13 +33,13 @@
               aria-label="{{ c.name }} 历史曲线">
               <defs>
                 <linearGradient id="mb{{ loop.index }}" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".32" />
+                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".28" />
                   <stop offset="100%" stop-color="{{ c.color }}" stop-opacity="0" />
                 </linearGradient>
               </defs>
               <path d="{{ c.area_path }}" fill="url(#mb{{ loop.index }})" />
               <path d="{{ c.line_path }}" fill="none" stroke="{{ c.color }}" stroke-width="2" stroke-linecap="round"
-                vector-effect="non-scaling-stroke" />
+                stroke-linejoin="round" vector-effect="non-scaling-stroke" />
             </svg>
             <div class="chart__foot num"><span>{{ c.ticks[0] if c.ticks else "" }}</span><span>峰值 {{ c.peak }}</span><span>{{ c.ticks[-1] if c.ticks else "" }}</span></div>
           </div>
@@ -50,7 +52,7 @@
     </div>
 
     <footer class="foot">
-      <span>MoeStatus v{{ version }}</span>
+      <span>MoeStatus <b>v{{ version }}</b> · {{ mascot_name }}体检所</span>
       <span class="num">{{ footer_right }}</span>
     </footer>
 

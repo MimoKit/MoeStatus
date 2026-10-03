@@ -37,7 +37,6 @@ from MoeStatus.MoeStatus.moestatus_data.types import (  # noqa: E402
     MonitorView,
     ProcSummary,
 )
-from MoeStatus.MoeStatus.moestatus_render.themes import THEMES  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_render.browser import screenshot  # noqa: E402
 from MoeStatus.MoeStatus.moestatus_render.template import (  # noqa: E402
     render_status_page,
@@ -209,21 +208,18 @@ def mock_monitor_view() -> MonitorView:
 
 async def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-
-    status_view = mock_status_view()
-    monitor_view = mock_monitor_view()
     scale = render_scale()
     print(f"渲染倍率: {scale}x")
-    for theme in THEMES:
-        status_html = await render_status_page(status_view, theme)
-        (OUT / f"status-{theme}.html").write_bytes(status_html.read_bytes())
-        (OUT / f"mock-status-{theme}.png").write_bytes(await screenshot(status_html, scale=scale))
-        print(f"[ok] mock-status-{theme}.png  ({theme})")
 
-        monitor_html = await render_monitor_page(monitor_view, theme)
-        (OUT / f"monitor-{theme}.html").write_bytes(monitor_html.read_bytes())
-        (OUT / f"mock-monitor-{theme}.png").write_bytes(await screenshot(monitor_html, scale=scale))
-        print(f"[ok] mock-monitor-{theme}.png ({theme})")
+    status_html = await render_status_page(mock_status_view())
+    (OUT / "status.html").write_bytes(status_html.read_bytes())
+    (OUT / "mock-status.png").write_bytes(await screenshot(status_html, scale=scale))
+    print("[ok] mock-status.png")
+
+    monitor_html = await render_monitor_page(mock_monitor_view())
+    (OUT / "monitor.html").write_bytes(monitor_html.read_bytes())
+    (OUT / "mock-monitor.png").write_bytes(await screenshot(monitor_html, scale=scale))
+    print("[ok] mock-monitor.png")
     return 0
 
 

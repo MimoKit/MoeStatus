@@ -22,13 +22,7 @@ CONFIG_DEFAULT: Dict[str, GSC] = {
         False,
     ),
     "mascotName": GsStrConfig("吉祥物名字", "显示在体检报告抬头和结论里的称呼", "早柚"),
-    "skin": GsStrConfig(
-        "界面皮肤",
-        "random = 每次出图随机挑一套；a = 纯白气泡；b = 奶白便签；c = 浅灰蓝云朵",
-        "random",
-        options=["random", "a", "b", "c"],
-    ),
-    "Gauges": GsDivider("体检量表", "试管量表里放哪些资源"),
+    "Gauges": GsDivider("体检量表", "量表里放哪些资源"),
     "gauge_list": GsListStrConfig(
         "量表项",
         "可选 CPU / RAM / SWAP / GPU / Python，顺序即展示顺序",
