@@ -1,0 +1,6 @@
+{
+  "include": ["MoeStatus", "tools"],
+  "extraPaths": ["../../../botkj/gsuid_core"],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "warning"
+}

@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ruff_cache/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# 开发期预览产物
+preview/

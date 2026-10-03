@@ -1,0 +1,206 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>B · 奶白便签墙</title>
+  <style>{% include "theme-b/style.css" %}</style>
+</head>
+
+<body>
+  <main id="container" class="wall vd-{{ verdict.level }}">
+
+    <div class="wall__head">
+      <div class="wall__mark">{% with mood = verdict.level %}{% include "_mascot.html.j2" %}{% endwith %}</div>
+      <div class="wall__title">{{ mascot_name }}体检便签</div>
+      <div class="wall__time num">{{ generated_at }}{% if is_pro %} · 全量{% endif %}</div>
+    </div>
+
+    <div class="grid">
+
+      <section class="note note--wide note--verdict">
+        <div class="verdict">
+          <div class="verdict__left">
+            <div class="verdict__word">{{ verdict.title }}</div>
+            <p class="verdict__line">{{ verdict.line }}</p>
+          </div>
+          <div class="verdict__right">
+            <div class="verdict__score num">{{ verdict.score }}</div>
+            <div class="verdict__scoreLabel">健康分</div>
+          </div>
+        </div>
+      </section>
+
+      {% if gauges %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--matcha">体检项</span></h2>
+        <div class="rings">
+          {% for g in gauges %}
+          <div class="ring lv-{{ g.level }}">
+            <div class="ring__wrap">
+              <svg viewBox="0 0 120 120">
+                <circle class="ring__track" cx="60" cy="60" r="46" />
+                <circle class="ring__fill" cx="60" cy="60" r="46"
+                  style="stroke-dasharray: 289.03; stroke-dashoffset: {{ (289.03 * (1 - g.value)) | round(2) }}" />
+              </svg>
+              <div class="ring__center">
+                <b class="num">{{ g.text }}</b>
+              </div>
+            </div>
+            <div class="ring__label">{{ g.label }}</div>
+            <div class="ring__note num">{{ g.note }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if bots %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--straw">机器人</span></h2>
+        {% for b in bots %}
+        <div class="bot">
+          {% if b.avatar %}<img class="bot__pic" src="{{ b.avatar }}" alt="">{% else %}<div class="bot__pic bot__pic--empty"></div>{% endif %}
+          <div class="bot__main">
+            <div class="bot__name">{{ b.nickname }}</div>
+            <div class="bot__pills">
+              <span class="pill pill--straw">{{ b.platform }}</span>
+              <span class="pill num">{{ b.version }}</span>
+              {% if b.uptime %}<span class="pill num">在线 {{ b.uptime }}</span>{% endif %}
+            </div>
+          </div>
+          <div class="bot__grid">
+            <div class="cell"><b class="num">{{ b.recv or "—" }}</b><span>收到</span></div>
+            <div class="cell"><b class="num">{{ b.sent or "—" }}</b><span>发出</span></div>
+            <div class="cell"><b class="num">{{ b.friends or "—" }}</b><span>好友</span></div>
+            <div class="cell"><b class="num">{{ b.groups or "—" }}</b><span>群组</span></div>
+            <div class="cell"><b class="num">{{ b.members or "—" }}</b><span>群成员</span></div>
+          </div>
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      <section class="note">
+        <h2 class="note__title"><span class="marker marker--sky">网络</span></h2>
+        <div class="speed">
+          <span class="speed__tag">下行</span>
+          <b class="speed__val num">{{ net.down_speed }}</b>
+          <span class="speed__total num">累计 {{ net.down_total }}</span>
+        </div>
+        <div class="speed">
+          <span class="speed__tag">上行</span>
+          <b class="speed__val speed__val--up num">{{ net.up_speed }}</b>
+          <span class="speed__total num">累计 {{ net.up_total }}</span>
+        </div>
+      </section>
+
+      {% if sites %}
+      <section class="note">
+        <h2 class="note__title"><span class="marker marker--grape">站点</span></h2>
+        {% for s in sites %}
+        <div class="site">
+          <span class="site__name">{{ s.name }}</span>
+          <span class="site__val num {{ 'ok' if s.ok else 'bad' }}">{{ s.detail }}</span>
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if disks %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--honey">存储</span></h2>
+        {% for d in disks %}
+        <div class="disk lv-{{ d.level }}">
+          <div class="disk__top">
+            <span class="disk__mount">{{ d.mount }}</span>
+            <span class="disk__pct num">{{ d.text }}</span>
+          </div>
+          <div class="disk__track">
+            <div class="disk__fill" style="width: {{ (d.value * 100) | round(2) }}%"></div>
+          </div>
+          <div class="disk__foot num">{{ d.used }} / {{ d.total }} · 可用 {{ d.free }} · {{ d.fstype }}</div>
+        </div>
+        {% endfor %}
+        {% if disk_io %}
+        <div class="io">
+          {% for io in disk_io %}
+          <span class="io__item num">{{ io.name }} 读 <b>{{ io.read }}</b></span>
+          <span class="io__item num">{{ io.name }} 写 <b>{{ io.write }}</b></span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {% if procs %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--straw">进程</span></h2>
+        <div class="proc__row proc__row--head">
+          <span>进程</span><span class="r">PID</span><span class="r">CPU</span><span class="r">内存</span>
+        </div>
+        {% for p in procs %}
+        <div class="proc__row">
+          <span class="proc__name">{{ p.name }}</span>
+          <span class="r num">{{ p.pid }}</span>
+          <span class="r num">{{ p.cpu }}</span>
+          <span class="r num">{{ p.mem }}</span>
+        </div>
+        {% endfor %}
+        <div class="proc__foot num">共 {{ proc_summary.total }} 个 · 运行 {{ proc_summary.running }} · 休眠 {{ proc_summary.sleeping }}</div>
+      </section>
+      {% endif %}
+
+      {% if charts %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--grape">趋势</span></h2>
+        <div class="charts">
+          {% for c in charts %}
+          <div class="chart">
+            <div class="chart__head">
+              <span class="chart__name">{{ c.name }}</span>
+              <span class="chart__val num">{{ c.latest }}</span>
+            </div>
+            <svg class="chart__svg" viewBox="0 0 100 40" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="b{{ loop.index }}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".32" />
+                  <stop offset="100%" stop-color="{{ c.color }}" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <path d="{{ c.area_path }}" fill="url(#b{{ loop.index }})" />
+              <path d="{{ c.line_path }}" fill="none" stroke="{{ c.color }}" stroke-width="2" stroke-linecap="round"
+                vector-effect="non-scaling-stroke" />
+            </svg>
+            <div class="chart__foot num"><span>{{ c.ticks[0] if c.ticks else "" }}</span><span>峰值 {{ c.peak }}</span><span>{{ c.ticks[-1] if c.ticks else "" }}</span></div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if sysinfo or fastfetch %}
+      <section class="note note--wide">
+        <h2 class="note__title"><span class="marker marker--matcha">环境</span></h2>
+        <div class="facts">
+          {% for r in sysinfo %}
+          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
+          {% endfor %}
+          {% for r in fastfetch %}
+          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+    </div>
+
+    <footer class="foot">
+      <span>MoeStatus v{{ version }}</span>
+      <span class="num">{{ footer_right }}</span>
+    </footer>
+
+  </main>
+</body>
+
+</html>

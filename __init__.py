@@ -1,0 +1,1 @@
+"""MoeStatus GsCore plugin package."""

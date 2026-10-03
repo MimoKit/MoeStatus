@@ -1,0 +1,202 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>C · 浅灰蓝云朵</title>
+  <style>{% include "theme-c/style.css" %}</style>
+</head>
+
+<body>
+  <main id="container" class="page vd-{{ verdict.level }}">
+
+    <div class="sky">
+      <div class="sky__mark">{% with mood = verdict.level %}{% include "_mascot.html.j2" %}{% endwith %}</div>
+      <div class="sky__text">
+        <div class="sky__name">{{ mascot_name }}体检所</div>
+        <div class="sky__time num">{{ generated_at }}{% if is_pro %} · 全量体检{% endif %}</div>
+      </div>
+      <div class="sky__chips">
+        <span class="chip num">健康分 {{ verdict.score }}</span>
+        <span class="chip chip--state">{{ verdict.title }}</span>
+      </div>
+    </div>
+
+    <section class="panel panel--hero">
+      <div class="hero">
+        <div class="hero__word">{{ verdict.title }}</div>
+        <p class="hero__line">{{ verdict.line }}</p>
+      </div>
+    </section>
+
+    {% if gauges %}
+    <section class="panel">
+      <h2 class="panel__title"><i class="bar bar--blue"></i>体检项</h2>
+      <div class="arcs">
+        {% for g in gauges %}
+        <div class="arc lv-{{ g.level }}">
+          <svg class="arc__svg" viewBox="0 0 120 70">
+            <path class="arc__track" d="M 12 58 A 48 48 0 0 1 108 58" />
+            <path class="arc__fill" d="M 12 58 A 48 48 0 0 1 108 58"
+              style="stroke-dasharray: 150.8; stroke-dashoffset: {{ (150.8 * (1 - g.value)) | round(2) }}" />
+          </svg>
+          <div class="arc__val num">{{ g.text }}</div>
+          <div class="arc__label">{{ g.label }}</div>
+          <div class="arc__note num">{{ g.note }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <div class="grid">
+
+      {% if bots %}
+      <section class="panel panel--wide">
+        <h2 class="panel__title"><i class="bar bar--aqua"></i>机器人</h2>
+        {% for b in bots %}
+        <div class="bot">
+          {% if b.avatar %}<img class="bot__pic" src="{{ b.avatar }}" alt="">{% else %}<div class="bot__pic bot__pic--empty"></div>{% endif %}
+          <div class="bot__main">
+            <div class="bot__name">{{ b.nickname }}</div>
+            <div class="bot__pills">
+              <span class="pill pill--aqua">{{ b.platform }}</span>
+              <span class="pill num">{{ b.version }}</span>
+              {% if b.uptime %}<span class="pill num">在线 {{ b.uptime }}</span>{% endif %}
+            </div>
+          </div>
+          <div class="bot__grid">
+            <div class="cell"><b class="num">{{ b.recv or "—" }}</b><span>收到</span></div>
+            <div class="cell"><b class="num">{{ b.sent or "—" }}</b><span>发出</span></div>
+            <div class="cell"><b class="num">{{ b.friends or "—" }}</b><span>好友</span></div>
+            <div class="cell"><b class="num">{{ b.groups or "—" }}</b><span>群组</span></div>
+            <div class="cell"><b class="num">{{ b.members or "—" }}</b><span>群成员</span></div>
+          </div>
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      <section class="panel">
+        <h2 class="panel__title"><i class="bar bar--blue"></i>网络</h2>
+        <div class="speed">
+          <span class="speed__tag">下行</span>
+          <b class="speed__val num">{{ net.down_speed }}</b>
+          <span class="speed__total num">累计 {{ net.down_total }}</span>
+        </div>
+        <div class="speed">
+          <span class="speed__tag">上行</span>
+          <b class="speed__val speed__val--up num">{{ net.up_speed }}</b>
+          <span class="speed__total num">累计 {{ net.up_total }}</span>
+        </div>
+      </section>
+
+      {% if sites %}
+      <section class="panel">
+        <h2 class="panel__title"><i class="bar bar--lav"></i>站点</h2>
+        {% for s in sites %}
+        <div class="site">
+          <span class="site__name">{{ s.name }}</span>
+          <span class="site__val num {{ 'ok' if s.ok else 'bad' }}">{{ s.detail }}</span>
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if disks %}
+      <section class="panel panel--wide">
+        <h2 class="panel__title"><i class="bar bar--sun"></i>存储</h2>
+        {% for d in disks %}
+        <div class="disk lv-{{ d.level }}">
+          <div class="disk__top">
+            <span class="disk__mount">{{ d.mount }}</span>
+            <span class="disk__pct num">{{ d.text }}</span>
+          </div>
+          <div class="disk__track">
+            <div class="disk__fill" style="width: {{ (d.value * 100) | round(2) }}%"></div>
+          </div>
+          <div class="disk__foot num">{{ d.used }} / {{ d.total }} · 可用 {{ d.free }} · {{ d.fstype }}</div>
+        </div>
+        {% endfor %}
+        {% if disk_io %}
+        <div class="io">
+          {% for io in disk_io %}
+          <span class="io__item num">{{ io.name }} 读 <b>{{ io.read }}</b></span>
+          <span class="io__item num">{{ io.name }} 写 <b>{{ io.write }}</b></span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {% if procs %}
+      <section class="panel panel--wide">
+        <h2 class="panel__title"><i class="bar bar--rose"></i>进程</h2>
+        <div class="proc__row proc__row--head">
+          <span>进程</span><span class="r">PID</span><span class="r">CPU</span><span class="r">内存</span>
+        </div>
+        {% for p in procs %}
+        <div class="proc__row">
+          <span class="proc__name">{{ p.name }}</span>
+          <span class="r num">{{ p.pid }}</span>
+          <span class="r num">{{ p.cpu }}</span>
+          <span class="r num">{{ p.mem }}</span>
+        </div>
+        {% endfor %}
+        <div class="proc__foot num">共 {{ proc_summary.total }} 个 · 运行 {{ proc_summary.running }} · 休眠 {{ proc_summary.sleeping }}</div>
+      </section>
+      {% endif %}
+
+      {% if charts %}
+      <section class="panel panel--wide">
+        <h2 class="panel__title"><i class="bar bar--blue"></i>趋势</h2>
+        <div class="charts">
+          {% for c in charts %}
+          <div class="chart">
+            <div class="chart__head">
+              <span class="chart__name">{{ c.name }}</span>
+              <span class="chart__val num">{{ c.latest }}</span>
+            </div>
+            <svg class="chart__svg" viewBox="0 0 100 40" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="c{{ loop.index }}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="{{ c.color }}" stop-opacity=".3" />
+                  <stop offset="100%" stop-color="{{ c.color }}" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <path d="{{ c.area_path }}" fill="url(#c{{ loop.index }})" />
+              <path d="{{ c.line_path }}" fill="none" stroke="{{ c.color }}" stroke-width="2" stroke-linecap="round"
+                vector-effect="non-scaling-stroke" />
+            </svg>
+            <div class="chart__foot num"><span>{{ c.ticks[0] if c.ticks else "" }}</span><span>峰值 {{ c.peak }}</span><span>{{ c.ticks[-1] if c.ticks else "" }}</span></div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if sysinfo or fastfetch %}
+      <section class="panel panel--wide">
+        <h2 class="panel__title"><i class="bar bar--lav"></i>环境</h2>
+        <div class="facts">
+          {% for r in sysinfo %}
+          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
+          {% endfor %}
+          {% for r in fastfetch %}
+          <div class="fact"><span class="fact__key">{{ r.key }}</span><span class="fact__val num">{{ r.value }}</span></div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+    </div>
+
+    <footer class="foot">
+      <span>MoeStatus v{{ version }} · {{ mascot_name }}体检所</span>
+      <span class="num">{{ footer_right }}</span>
+    </footer>
+
+  </main>
+</body>
+
+</html>
